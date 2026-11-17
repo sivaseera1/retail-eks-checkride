@@ -1,0 +1,39 @@
+# OPTIONAL and requires approval from the cluster administrator.
+# Gives a dashboard backend read-only access to this namespace's Pods,
+# Deployments, ReplicaSets, Services and Events. Never expose Kubernetes
+# credentials directly to the browser.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: retail-dashboard-reader
+  namespace: siva-p
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: retail-dashboard-reader
+  namespace: siva-p
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["autoscaling"]
+    resources: ["horizontalpodautoscalers"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: retail-dashboard-reader
+  namespace: siva-p
+subjects:
+  - kind: ServiceAccount
+    name: retail-dashboard-reader
+    namespace: siva-p
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: retail-dashboard-reader

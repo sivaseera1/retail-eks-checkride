@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: retail-order-api
+  namespace: siva-p
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: retail-order-api
