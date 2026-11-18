@@ -178,6 +178,7 @@ def version():
         "version": APP_VERSION,
         "service": "retail-order-tracking-api",
         "instance": INSTANCE_ID,
+        "deployment_message": "Rolling update demonstration - Version 2",
     }
 
 
