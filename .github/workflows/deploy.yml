@@ -81,14 +81,21 @@ jobs:
       - name: Verify namespace access
         run: |
           kubectl get namespace "$K8S_NAMESPACE"
-          kubectl auth can-i patch deployments \
-            -n "$K8S_NAMESPACE"
+          kubectl auth can-i create deployments -n "$K8S_NAMESPACE" || true
+          kubectl auth can-i patch deployments -n "$K8S_NAMESPACE"
 
       - name: Deploy and validate
         id: deploy
         env:
           IMAGE_URI: ${{ steps.image.outputs.uri }}
         run: |
+          # If the deployment does not exist yet, apply base manifests first
+          if ! kubectl get deployment retail-order-api -n "$K8S_NAMESPACE" >/dev/null 2>&1; then
+            echo "Deployment retail-order-api not found in $K8S_NAMESPACE. Creating Service and Deployment..."
+            kubectl apply -f deploy/kubernetes/base/service.yaml
+            kubectl apply -f deploy/kubernetes/base/deployment.yaml
+          fi
+
           kubectl set image \
             deployment/retail-order-api \
             api="$IMAGE_URI" \
