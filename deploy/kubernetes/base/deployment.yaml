@@ -45,7 +45,7 @@ spec:
           emptyDir: {}
       containers:
         - name: api
-          image: REPLACE_WITH_IMAGE
+          image: 783764579167.dkr.ecr.ap-south-1.amazonaws.com/checkride/siva-p:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

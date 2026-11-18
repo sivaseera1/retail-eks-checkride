@@ -44,7 +44,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_GITHUB_ACTIONS_ROLE_ARN || 'arn:aws:iam::783764579167:role/eks-checkride-shared-siva-p-cicd' }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Verify AWS identity
