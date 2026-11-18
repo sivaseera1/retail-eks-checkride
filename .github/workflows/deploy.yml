@@ -78,29 +78,23 @@ jobs:
             --region "$AWS_REGION" \
             --name "$EKS_CLUSTER"
 
-      - name: Verify namespace access
-        run: |
-          kubectl get namespace "$K8S_NAMESPACE"
-          kubectl auth can-i create deployments -n "$K8S_NAMESPACE" || true
-          kubectl auth can-i patch deployments -n "$K8S_NAMESPACE"
-
       - name: Deploy and validate
         id: deploy
         env:
           IMAGE_URI: ${{ steps.image.outputs.uri }}
         run: |
-          # If the deployment does not exist yet, apply base manifests first
-          if ! kubectl get deployment retail-order-api -n "$K8S_NAMESPACE" >/dev/null 2>&1; then
-            echo "Deployment retail-order-api not found in $K8S_NAMESPACE. Creating Service and Deployment..."
-            kubectl apply -f deploy/kubernetes/base/service.yaml
-            kubectl apply -f deploy/kubernetes/base/deployment.yaml
-          fi
+          # Apply base Service and Deployment (idempotent: creates if missing, updates if present)
+          kubectl apply -f deploy/kubernetes/base/service.yaml --request-timeout=30s
+          kubectl apply -f deploy/kubernetes/base/deployment.yaml --request-timeout=30s
 
+          # Set image to the newly built immutable SHA
           kubectl set image \
             deployment/retail-order-api \
             api="$IMAGE_URI" \
-            -n "$K8S_NAMESPACE"
+            -n "$K8S_NAMESPACE" \
+            --request-timeout=30s
 
+          # Validate rollout status
           if ! kubectl rollout status \
             deployment/retail-order-api \
             -n "$K8S_NAMESPACE" \
