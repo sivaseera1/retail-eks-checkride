@@ -12,26 +12,23 @@ Retail-EKS-Checkride/
 │   └── tests/
 ├── frontend/                    # React Operations Console (Vite)
 │   └── src/
-├── deploy/                      # Everything for local execution & EKS deployment
-│   ├── kubernetes/
-│   │   ├── base/                # Core manifests: namespace, deployment, service
-│   │   └── optional/            # Prerequisite-dependent: hpa, pdb, ingress, rbac
-│   └── scripts/
-│       ├── local/               # run-local.ps1, test-local.ps1
-│       └── eks/                 # deploy-namespace.ps1, demo-readiness-failure.ps1, demo-rollback.ps1
+├── deploy/                      # Kubernetes manifests
+│   └── kubernetes/
+│       ├── base/                # Core manifests: namespace, deployment, service
+│       └── optional/            # Prerequisite-dependent: hpa, pdb, ingress, rbac
 ├── .github/workflows/           # Automated CI/CD (OIDC + ECR + EKS rollout/undo)
-└── docs/                        # Separated into presentation/, architecture/, runbooks/
+└── start.bat                    # 1-click launcher for local app, tests & EKS status
 ```
 
 ## What is included
 - **Backend (`backend/`):** FastAPI order-tracking API (`/health`, `/ready`, `/version`, `/orders`, `/orders/{id}`, `POST /orders`, `PATCH /orders/{id}`, `POST /ops/readiness`), non-root `Dockerfile`, and unit tests (`backend/tests/test_app.py`).
 - **Frontend (`frontend/`):** React operations console with collapsible sidebar, live order creation/status updates, and live readiness probe toggle.
-- **Deployment (`deploy/`):** Core Kubernetes manifests (`deploy/kubernetes/base/`), optional manifests (`deploy/kubernetes/optional/`), and PowerShell scripts (`deploy/scripts/`).
+- **Deployment (`deploy/`):** Core Kubernetes manifests (`deploy/kubernetes/base/`) and optional manifests (`deploy/kubernetes/optional/`).
 - **CI/CD (`.github/workflows/deploy.yml`):** Automated tests/build, AWS OIDC login, ECR push, `/ready` smoke test, and verified `kubectl rollout undo`.
-- **Docs (`docs/`):** Interactive presentation (`docs/presentation/presentation.html`), architecture diagram (`docs/architecture/ARCHITECTURE.md`), and operations runbooks (`docs/runbooks/`).
+- **Launcher (`start.bat`):** 1-click Windows controller to start local services, run test suite, or check EKS status.
 
 ## 1. Run locally (Windows)
-**One-click start:** Double-click [`start-local.bat`](start-local.bat) in `Retail-EKS-Checkride` to install any missing dependencies, launch both Backend (`:8080`) and Frontend (`:5173`), and open the browser automatically.
+**One-click start:** Double-click [`start.bat`](start.bat) in `Retail-EKS-Checkride` to install any missing dependencies, launch both Backend (`:8080`) and Frontend (`:5173`), and open the browser automatically.
 
 **Manual PowerShell start** (Prerequisites: Python 3.11+ and Node.js 20+):
 
