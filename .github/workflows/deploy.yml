@@ -64,7 +64,6 @@ jobs:
           IMAGE="$REGISTRY/$ECR_REPOSITORY:$SHORT_SHA"
 
           docker build \
-            --build-arg APP_VERSION="$SHORT_SHA" \
             -t "$IMAGE" \
             ./backend
 

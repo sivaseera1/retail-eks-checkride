@@ -47,7 +47,7 @@ export default function App() {
 
       if (vRes && vRes.ok) {
         const v = await vRes.json();
-        setVersion(v.version || "1.0.0");
+        setVersion(v.version || "v1");
         setInstance(v.instance || "local");
       }
 
@@ -168,8 +168,10 @@ export default function App() {
             <span>Application Version</span>
             <Server size={18} className="text-purple" />
           </div>
-          <div className="card-value">v{version}</div>
-          <div className="card-meta">Last sync: {lastUpdated || "connecting..."}</div>
+          <div className="card-value">
+            {version ? (version.toLowerCase().startsWith("v") ? version.toLowerCase() : `v${version}`) : "v1"}
+          </div>
+          <div className="card-meta">Active release in production</div>
         </div>
       </div>
 

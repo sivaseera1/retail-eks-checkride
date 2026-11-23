@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
+APP_VERSION = os.getenv("APP_VERSION", "v1")
 INSTANCE_ID = os.getenv("HOSTNAME", socket.gethostname())
 SIMULATE_UNREADY = os.getenv("SIMULATE_UNREADY", "false").lower() == "true"
 
@@ -69,7 +69,7 @@ def set_readiness(ready_state: bool = Query(..., alias="ready")):
 
 @app.get("/version")
 def version():
-    return {"version": APP_VERSION, "service": "retail-order-tracking-api", "instance": INSTANCE_ID}
+    return {"version": os.getenv("APP_VERSION", "v1"), "service": "retail-order-tracking-api", "instance": INSTANCE_ID}
 
 
 @app.get("/orders")
